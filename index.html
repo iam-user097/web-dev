@@ -136,7 +136,7 @@
 </head>
 <body>
 
-  <div class="container" id="mainContainer">
+  <div class="container signin-active" id="mainContainer">
     <!-- Forms -->
     <div class="form-wrapper">
       <!-- Sign Up Form -->
@@ -149,7 +149,7 @@
       </div>
 
       <!-- Sign In Form -->
-      <div class="form-section signin">
+      <div class="form-section signin active">
         <h2>Sign In</h2>
         <input type="email" id="signinEmail" placeholder="Email Address" required />
         <input type="password" id="signinPassword" placeholder="Password" required />
@@ -182,7 +182,7 @@
 
   // ✅ Redirect if already logged in
   if (localStorage.getItem("isLoggedIn") === "true") {
-    window.location.href = "dashboard.html";
+    window.location.href = "dashboard.html"; // you can create this page
   }
 
   // 🔁 UI Toggle
@@ -219,9 +219,15 @@
     // Save new user
     users[email] = { name, password };
     localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("lastSignupEmail", email); // auto-fill later
     alert("✅ Account created successfully! Please sign in.");
+
+    // Auto switch to signin
     container.classList.add('signin-active');
     container.classList.remove('signup-active');
+
+    // Auto-fill email in signin
+    document.getElementById('signinEmail').value = email;
   });
 
   // ✅ Sign In Logic
@@ -250,7 +256,15 @@
     // Login success
     localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("loggedInUser", email);
-    window.location.href = "loader.html";
+    window.location.href = "loader.html"; // change to your page
+  });
+
+  // ✅ Auto-fill last signup email in signin form
+  document.addEventListener("DOMContentLoaded", () => {
+    const lastEmail = localStorage.getItem("lastSignupEmail");
+    if (lastEmail) {
+      document.getElementById('signinEmail').value = lastEmail;
+    }
   });
 </script>
 </body>
